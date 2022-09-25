@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,11 +32,25 @@ class HomeScreen extends StatelessWidget {
                     final DocumentSnapshot documentSnapshot =
                         streamSnapshot.data!.docs[index];
                     return Card(
+                      elevation: 6,
                       margin: const EdgeInsets.all(10),
-                      child: ListTile(
-                        title: Text(documentSnapshot['name']),
-                        subtitle: Text(documentSnapshot['color']),
+
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(40),
+                            child: Text(
+                              documentSnapshot['name'],
+                              style: TextStyle(fontSize: 35),
+                            ),
+                          ),
+                        ],
                       ),
+
+                      // child: ListTile(
+                      //   title: Text(documentSnapshot['name']),
+                      //   subtitle: Text(documentSnapshot['color']),
+                      // ),
                     );
                   },
                 );
