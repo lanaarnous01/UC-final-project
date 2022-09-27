@@ -20,14 +20,25 @@ class _HomeScreenState extends State<HomeScreen> {
   final CollectionReference _cars =
       FirebaseFirestore.instance.collection('cars');
 
-  final TextEditingController _nameController = TextEditingController();
+  final _nameController = TextEditingController();
 
-  final TextEditingController _colorController = TextEditingController();
+  final _colorController = TextEditingController();
 
-  Future<void> _update([DocumentSnapshot? documentSnapshot]) async {
+  final plateNoController = TextEditingController();
+
+  final spotController = TextEditingController();
+
+  var selectedType;
+
+  List<String> spot = ['A1', 'A2', 'A3'];
+  var parkSpot;
+
+  Future<void> update([DocumentSnapshot? documentSnapshot]) async {
     if (documentSnapshot != null) {
       _nameController.text = documentSnapshot['name'];
       _colorController.text = documentSnapshot['color'];
+      plateNoController.text = documentSnapshot['plateNo'];
+      spotController.text = documentSnapshot['spot'];
     }
 
     await showModalBottomSheet(
@@ -51,7 +62,40 @@ class _HomeScreenState extends State<HomeScreen> {
                 TextField(
                   controller: _colorController,
                   decoration: const InputDecoration(
-                    labelText: 'Price',
+                    labelText: 'Color',
+                  ),
+                ),
+                TextField(
+                  controller: plateNoController,
+                  decoration: const InputDecoration(
+                    labelText: 'Plate No',
+                  ),
+                ),
+                TextField(
+                    controller: spotController,
+                    decoration: const InputDecoration(
+                      labelText: 'Spot',
+                    )),
+                DropdownButtonFormField(
+                  items: spot
+                      .map((value) => DropdownMenuItem(
+                            child: Text(
+                              value,
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            value: value,
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      value;
+                    });
+                  },
+                  value: selectedType,
+                  isExpanded: false,
+                  hint: Text(
+                    'Choose Parking Spot',
+                    style: TextStyle(color: Colors.blue),
                   ),
                 ),
                 SizedBox(
@@ -62,15 +106,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () async {
                     final String name = _nameController.text;
                     final String color = _colorController.text;
+                    final String plateNo = plateNoController.text;
+                    final String spot = spotController.text;
+                    // final String spot = spotController.selection;
 
-                    if (color != null) {
-                      await _cars
-                          .doc(documentSnapshot!.id)
-                          .update({"name": name, "color": color});
-                      _nameController.text = '';
-                      _colorController.text = '';
-                      Navigator.of(context).pop();
-                    }
+                    //   if (color != null) {
+                    await _cars.doc(documentSnapshot!.id).update({
+                      "name": name,
+                      "color": color,
+                      "plateNo": plateNo,
+                      "spot": spot
+                    });
+                    _nameController.text = '';
+                    _colorController.text = '';
+                    plateNoController.text = '';
+                    spotController.text = '';
+
+                    Navigator.of(context).pop();
+                    //   }
                   },
                 )
               ],
@@ -79,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  Future<void> _create([DocumentSnapshot? documentSnapshot]) async {
+  Future<void> create([DocumentSnapshot? documentSnapshot]) async {
     await showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -99,10 +152,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   decoration: const InputDecoration(labelText: 'Name'),
                 ),
                 TextField(
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                   controller: _colorController,
                   decoration: InputDecoration(
                     labelText: 'Color',
+                  ),
+                ),
+                TextField(
+                  controller: plateNoController,
+                  decoration: InputDecoration(
+                    labelText: 'Plate No',
+                  ),
+                ),
+                TextField(
+                  controller: spotController,
+                  decoration: InputDecoration(
+                    labelText: 'Spot',
                   ),
                 ),
                 SizedBox(
@@ -113,11 +177,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () async {
                     final String name = _nameController.text;
                     final String color = _colorController.text;
+                    final String plateNo = plateNoController.text;
+                    final String spot = spotController.text;
 
-                    await _cars.add({"name": name, "color": color});
+                    await _cars.add({
+                      "name": name,
+                      "color": color,
+                      "plateNo": plateNo,
+                      "spot": spot
+                    });
 
                     _nameController.text = '';
                     _colorController.text = '';
+                    plateNoController.text = '';
+                    spotController.text = '';
                     Navigator.of(context).pop();
                   },
                 )
@@ -127,11 +200,11 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  Future<void> _delete(String productId) async {
+  Future<void> delete(String productId) async {
     await _cars.doc(productId).delete();
 
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('You have successfully deleted a product')));
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('You have successfully deleted a product')));
   }
 
   // This widget is the root of your application.
@@ -141,8 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Cars'),
-          backgroundColor: Colors.amber,
+          title: Text('Valet Parking'),
+          backgroundColor: Colors.indigoAccent,
         ),
         body: StreamBuilder(
           stream: _cars.snapshots(),
@@ -161,26 +234,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CarScreen()));
+                                builder: (context) => CarScreen(
+                                      documentSnapshot: documentSnapshot,
+                                    )));
                       },
-                      child: ListTile(
-                        title: Text(documentSnapshot['name']),
-                        subtitle: Text(documentSnapshot['color']),
-                        trailing: SizedBox(
-                          width: 100,
-                          child: Row(
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                onPressed: () => _update(documentSnapshot),
-                              ),
-                              IconButton(
-                                  icon: Icon(Icons.delete),
-                                  onPressed: () =>
-                                      _delete(documentSnapshot.id)),
-                            ],
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(40),
+                            child: Text(documentSnapshot['name']),
                           ),
-                        ),
+                          Text(documentSnapshot['plateNo']),
+                          Spacer(),
+                          Text(documentSnapshot['spot']),
+                          Spacer(),
+                          IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () => delete(documentSnapshot.id)),
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () => update(documentSnapshot),
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -188,13 +263,13 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             }
 
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(),
             );
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _create(),
+          onPressed: () => create(),
           child: Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

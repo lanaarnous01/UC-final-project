@@ -1,6 +1,4 @@
-// class Car {
-//   String name;
-//   String color;
-
-//   Car({required this.name, required this.color});
-// }
+class Car {
+  String parkSpot;
+  Car({required this.parkSpot});
+}
