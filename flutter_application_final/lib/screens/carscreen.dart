@@ -18,17 +18,17 @@ class CarScreen extends StatefulWidget {
 }
 
 class _CarScreenState extends State<CarScreen> {
-  var parkSpot;
   Widget row({required String text, required String info}) {
     return Row(
       children: [
         Container(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(25),
           alignment: Alignment.center,
         ),
         Text(
           info,
-          style: TextStyle(color: Colors.blueGrey, fontSize: 20),
+          style:
+              TextStyle(color: Color.fromARGB(255, 21, 56, 84), fontSize: 20),
         ),
         Container(
           padding: EdgeInsets.only(left: 60),
@@ -49,8 +49,13 @@ class _CarScreenState extends State<CarScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text(widget.documentSnapshot['name']),
           backgroundColor: Colors.indigoAccent,
+          bottom: PreferredSize(
+            child: Text(widget.documentSnapshot['plateNo']),
+            preferredSize: Size.zero,
+          ),
         ),
         body: Column(
           children: [
@@ -67,13 +72,10 @@ class _CarScreenState extends State<CarScreen> {
             ),
             row(text: 'owner', info: 'Owner:'),
             row(text: 'name', info: 'Name:'),
-            row(text: 'phone', info: 'Phone:'),
-            row(text: 'color', info: 'Color:'),
-            row(
-              text: 'plateNo',
-              info: 'Plate No:',
-            ),
             row(text: 'spot', info: 'Spot: '),
+            row(text: 'phone', info: 'Phone:'),
+            row(text: 'plateNo', info: 'Plate No:'),
+            row(text: 'color', info: 'Color:'),
           ],
         ),
       ),

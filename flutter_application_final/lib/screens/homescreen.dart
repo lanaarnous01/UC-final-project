@@ -28,7 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final spotController = TextEditingController();
 
-  var selectedType;
+  final imageController = TextEditingController();
+
+  final ownerController = TextEditingController();
+
+  final phoneController = TextEditingController();
 
   List<String> spot = ['A1', 'A2', 'A3'];
   var parkSpot;
@@ -39,6 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
       _colorController.text = documentSnapshot['color'];
       plateNoController.text = documentSnapshot['plateNo'];
       spotController.text = documentSnapshot['spot'];
+      imageController.text = documentSnapshot['image'];
+      ownerController.text = documentSnapshot['owner'];
+      phoneController.text = documentSnapshot['phone'];
     }
 
     await showModalBottomSheet(
@@ -76,28 +83,42 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Spot',
                     )),
-                DropdownButtonFormField(
-                  items: spot
-                      .map((value) => DropdownMenuItem(
-                            child: Text(
-                              value,
-                              style: TextStyle(color: Colors.blue),
-                            ),
-                            value: value,
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      value;
-                    });
-                  },
-                  value: selectedType,
-                  isExpanded: false,
-                  hint: Text(
-                    'Choose Parking Spot',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                ),
+                // DropdownButtonFormField(
+                //   items: spot
+                //       .map((value) => DropdownMenuItem(
+                //             child: Text(
+                //               value,
+                //               style: TextStyle(color: Colors.blue),
+                //             ),
+                //             value: value,
+                //           ))
+                //       .toList(),
+                //   onChanged: (value) {
+                //     print(value);
+                //     setState(() {
+                //       value;
+                //     });
+                //   },
+                //   value: parkSpot,
+                //   isExpanded: false,
+                //   hint: Text(
+                //     'Choose Parking Spot',
+                //     style: TextStyle(color: Colors.blue),
+                //   ),
+                // ),
+
+                TextField(
+                    controller: ownerController,
+                    decoration: const InputDecoration(
+                      labelText: 'Owner',
+                    )),
+
+                TextField(
+                    controller: phoneController,
+                    decoration: const InputDecoration(
+                      labelText: 'Phone',
+                    )),
+
                 SizedBox(
                   height: 20,
                 ),
@@ -108,22 +129,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     final String color = _colorController.text;
                     final String plateNo = plateNoController.text;
                     final String spot = spotController.text;
+                    final String owner = ownerController.text;
+                    final String phone = phoneController.text;
                     // final String spot = spotController.selection;
 
-                    //   if (color != null) {
                     await _cars.doc(documentSnapshot!.id).update({
                       "name": name,
                       "color": color,
                       "plateNo": plateNo,
-                      "spot": spot
+                      "spot": spot,
+                      "owner": owner,
+                      "phone": phone,
                     });
                     _nameController.text = '';
                     _colorController.text = '';
                     plateNoController.text = '';
                     spotController.text = '';
+                    ownerController.text = '';
+                    phoneController.text = '';
 
                     Navigator.of(context).pop();
-                    //   }
                   },
                 )
               ],
@@ -149,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(labelText: 'Name'),
                 ),
                 TextField(
                   controller: _colorController,
@@ -169,6 +194,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelText: 'Spot',
                   ),
                 ),
+                TextField(
+                  controller: ownerController,
+                  decoration: InputDecoration(
+                    labelText: 'Owner',
+                  ),
+                ),
+                TextField(
+                  controller: phoneController,
+                  decoration: InputDecoration(
+                    labelText: 'Phone',
+                  ),
+                ),
+                TextField(
+                  controller: imageController,
+                  decoration: InputDecoration(
+                    labelText: 'Image',
+                  ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -179,18 +222,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     final String color = _colorController.text;
                     final String plateNo = plateNoController.text;
                     final String spot = spotController.text;
+                    final String owner = ownerController.text;
+                    final String phone = phoneController.text;
+                    final String image = imageController.text;
 
                     await _cars.add({
                       "name": name,
                       "color": color,
                       "plateNo": plateNo,
-                      "spot": spot
+                      "spot": spot,
+                      "owner": owner,
+                      "phone": phone,
+                      "image": image,
                     });
 
                     _nameController.text = '';
                     _colorController.text = '';
                     plateNoController.text = '';
                     spotController.text = '';
+                    ownerController.text = '';
+                    phoneController.text = '';
+                    imageController.text = '';
                     Navigator.of(context).pop();
                   },
                 )
@@ -203,8 +255,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> delete(String productId) async {
     await _cars.doc(productId).delete();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('You have successfully deleted a product')));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('Car is removed')));
   }
 
   // This widget is the root of your application.
@@ -214,8 +266,15 @@ class _HomeScreenState extends State<HomeScreen> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: Text('Valet Parking'),
-          backgroundColor: Colors.indigoAccent,
+          backgroundColor: Color.fromARGB(255, 73, 85, 145),
+          actions: [
+            IconButton(
+              onPressed: () => create(),
+              icon: Icon(Icons.add),
+            )
+          ],
         ),
         body: StreamBuilder(
           stream: _cars.snapshots(),
@@ -241,12 +300,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(40),
-                            child: Text(documentSnapshot['name']),
+                            padding: EdgeInsets.only(left: 10),
+                            child: Image.network(
+                              documentSnapshot['image'],
+                              height: 100,
+                              width: 80,
+                            ),
                           ),
-                          Text(documentSnapshot['plateNo']),
+                          Container(
+                            padding: EdgeInsets.all(40),
+                            child: Text(documentSnapshot['spot']),
+                          ),
+                          Text(documentSnapshot['name']),
                           Spacer(),
-                          Text(documentSnapshot['spot']),
+                          Text(documentSnapshot['plateNo']),
                           Spacer(),
                           IconButton(
                               icon: Icon(Icons.delete),
@@ -264,15 +331,12 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colors.amber,
+              ),
             );
           },
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => create(),
-          child: Icon(Icons.add),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
