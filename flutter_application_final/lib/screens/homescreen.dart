@@ -34,18 +34,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final phoneController = TextEditingController();
 
-  List<String> spot = ['A1', 'A2', 'A3'];
-  var parkSpot;
+  List<String> spot = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4'];
+  String? parkSpot;
 
   Future<void> update([DocumentSnapshot? documentSnapshot]) async {
+    print('object');
     if (documentSnapshot != null) {
       _nameController.text = documentSnapshot['name'];
       _colorController.text = documentSnapshot['color'];
       plateNoController.text = documentSnapshot['plateNo'];
-      spotController.text = documentSnapshot['spot'];
       imageController.text = documentSnapshot['image'];
       ownerController.text = documentSnapshot['owner'];
       phoneController.text = documentSnapshot['phone'];
+      parkSpot = documentSnapshot['spot'];
     }
 
     await showModalBottomSheet(
@@ -78,47 +79,43 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelText: 'Plate No',
                   ),
                 ),
-                TextField(
-                    controller: spotController,
-                    decoration: const InputDecoration(
-                      labelText: 'Spot',
-                    )),
-                // DropdownButtonFormField(
-                //   items: spot
-                //       .map((value) => DropdownMenuItem(
-                //             child: Text(
-                //               value,
-                //               style: TextStyle(color: Colors.blue),
-                //             ),
-                //             value: value,
-                //           ))
-                //       .toList(),
-                //   onChanged: (value) {
-                //     print(value);
-                //     setState(() {
-                //       value;
-                //     });
-                //   },
-                //   value: parkSpot,
-                //   isExpanded: false,
-                //   hint: Text(
-                //     'Choose Parking Spot',
-                //     style: TextStyle(color: Colors.blue),
-                //   ),
-                // ),
-
+                // TextField(
+                //     controller: spotController,
+                //     decoration: const InputDecoration(
+                //       labelText: 'Spot',
+                //     )),
+                DropdownButtonFormField(
+                  items: spot
+                      .map((value) => DropdownMenuItem(
+                            child: Text(
+                              value,
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            value: value,
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    print(value);
+                    parkSpot = value;
+                    setState(() {});
+                  },
+                  value: parkSpot,
+                  isExpanded: false,
+                  hint: Text(
+                    'Choose Parking Spot',
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
                 TextField(
                     controller: ownerController,
                     decoration: const InputDecoration(
                       labelText: 'Owner',
                     )),
-
                 TextField(
                     controller: phoneController,
                     decoration: const InputDecoration(
                       labelText: 'Phone',
                     )),
-
                 SizedBox(
                   height: 20,
                 ),
@@ -137,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       "name": name,
                       "color": color,
                       "plateNo": plateNo,
-                      "spot": spot,
+                      "spot": parkSpot,
                       "owner": owner,
                       "phone": phone,
                     });
@@ -188,10 +185,32 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelText: 'Plate No',
                   ),
                 ),
-                TextField(
-                  controller: spotController,
-                  decoration: InputDecoration(
-                    labelText: 'Spot',
+                // TextField(
+                //   controller: spotController,
+                //   decoration: InputDecoration(
+                //     labelText: 'Spot',
+                //   ),
+                // ),
+                DropdownButtonFormField(
+                  items: spot
+                      .map((value) => DropdownMenuItem(
+                            child: Text(
+                              value,
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            value: value,
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    print(value);
+                    parkSpot = value;
+                    setState(() {});
+                  },
+                  value: parkSpot,
+                  isExpanded: false,
+                  hint: Text(
+                    'Choose Parking Spot',
+                    style: TextStyle(color: Colors.blue),
                   ),
                 ),
                 TextField(
@@ -230,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       "name": name,
                       "color": color,
                       "plateNo": plateNo,
-                      "spot": spot,
+                      "spot": parkSpot,
                       "owner": owner,
                       "phone": phone,
                       "image": image,
@@ -254,9 +273,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> delete(String productId) async {
     await _cars.doc(productId).delete();
-
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Car is removed')));
   }
 
   // This widget is the root of your application.
