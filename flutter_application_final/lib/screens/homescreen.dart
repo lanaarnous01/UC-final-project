@@ -116,6 +116,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Phone',
                     )),
+
+                TextField(
+                    controller: imageController,
+                    decoration: const InputDecoration(
+                      labelText: 'Image',
+                    )),
+
                 SizedBox(
                   height: 20,
                 ),
@@ -128,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     final String spot = spotController.text;
                     final String owner = ownerController.text;
                     final String phone = phoneController.text;
-                    // final String spot = spotController.selection;
+                    final String image = imageController.text;
 
                     await _cars.doc(documentSnapshot!.id).update({
                       "name": name,
@@ -137,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       "spot": parkSpot,
                       "owner": owner,
                       "phone": phone,
+                      "image": image,
                     });
                     _nameController.text = '';
                     _colorController.text = '';
@@ -144,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     spotController.text = '';
                     ownerController.text = '';
                     phoneController.text = '';
+                    imageController.text = '';
 
                     Navigator.of(context).pop();
                   },
