@@ -19,15 +19,17 @@
 
 > Fill out project information in English ⬇️
 ### Student Name
-
+Lana Arnous
 
 ### Project Name
+Valet Parking app
 
 # Idea
 Problem and solutions if found 
-
+Developing a valet parking application to simplify the process for staff to keep track of cars parked.
+All information is stored in Firebase
 
 # Future Work 
-
+Valet parking companies
 
 
