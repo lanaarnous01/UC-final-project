@@ -3,7 +3,6 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_application_final/models/models.dart';
 
 // void main() {
 //   runApp(const MyApp());
@@ -60,7 +59,6 @@ class _CarScreenState extends State<CarScreen> {
         body: Column(
           children: [
             Container(
-              //  padding: EdgeInsets.all(10),
               child: Image.network(
                 widget.documentSnapshot['image'],
                 height: 250,

@@ -79,11 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelText: 'Plate No',
                   ),
                 ),
-                // TextField(
-                //     controller: spotController,
-                //     decoration: const InputDecoration(
-                //       labelText: 'Spot',
-                //     )),
                 DropdownButtonFormField(
                   items: spot
                       .map((value) => DropdownMenuItem(
@@ -116,13 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Phone',
                     )),
-
                 TextField(
                     controller: imageController,
                     decoration: const InputDecoration(
                       labelText: 'Image',
                     )),
-
                 SizedBox(
                   height: 20,
                 ),
@@ -132,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     final String name = _nameController.text;
                     final String color = _colorController.text;
                     final String plateNo = plateNoController.text;
-                    final String spot = spotController.text;
+
                     final String owner = ownerController.text;
                     final String phone = phoneController.text;
                     final String image = imageController.text;
@@ -194,12 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     labelText: 'Plate No',
                   ),
                 ),
-                // TextField(
-                //   controller: spotController,
-                //   decoration: InputDecoration(
-                //     labelText: 'Spot',
-                //   ),
-                // ),
                 DropdownButtonFormField(
                   items: spot
                       .map((value) => DropdownMenuItem(
@@ -249,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     final String name = _nameController.text;
                     final String color = _colorController.text;
                     final String plateNo = plateNoController.text;
-                    final String spot = spotController.text;
+
                     final String owner = ownerController.text;
                     final String phone = phoneController.text;
                     final String image = imageController.text;
